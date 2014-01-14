@@ -22,6 +22,7 @@
 
 #include <stdint.h>
 
+
 // Version number
 // (must not contain capital letters)
 #define LASAURGRBL_VERSION "13.04"
@@ -29,6 +30,10 @@
 
 // Whether or not to drive an LCD.
 #define ENABLE_LCD
+
+
+//??Whether or not to use a DC-motor for Z-axis??
+//#define MOTOR_Z
 
 // This defines the maximum number of dots in a raster.
 #define RASTER_BUFFER_SIZE	1024
@@ -46,15 +51,15 @@
 #define CONFIG_Y_ORIGIN_OFFSET 0.0  // mm, y-offset of table origin from physical home
 #define CONFIG_Z_ORIGIN_OFFSET 0.0   // mm, z-offset of table origin from physical home
 #define CONFIG_X_MIN 0.0
-//#define CONFIG_X_MAX 325.0
+#define CONFIG_X_MAX 325.0
 #define CONFIG_Y_MIN 0.0
-//#define CONFIG_Y_MAX 215.0
-//#define CONFIG_Z_MIN 0.0
-//#define CONFIG_Z_MAX 50.0
+#define CONFIG_Y_MAX 215.0
+#define CONFIG_Z_MIN 0.0
+#define CONFIG_Z_MAX 50.0
 
 #define CONFIG_INVERT_X_AXIS 1  // 0 is regular, 1 inverts the x direction
 #define CONFIG_INVERT_Y_AXIS 1  // 0 is regular, 1 inverts the y direction
-#define CONFIG_INVERT_Z_AXIS 0  // 0 is regular, 1 inverts the y direction
+#define CONFIG_INVERT_Z_AXIS 0  // 0 is regular, 1 inverts the z direction
 
 #define CONFIG_LASER_PWM_FREQ			40000
 #define CONFIG_LASER_PPI_PULSE_MS		4
@@ -78,8 +83,14 @@
 #define JOY_MASK 				(1<<JOY_BIT)
 #define JOY_TIMER				TIMER3_BASE
 
-//#define JOY_INVERT_Y
+#define JOY_INVERT_Y
 //#define JOY_INVERT_X
+
+#define JOG_Z_PORT              GPIO_PORTA_BASE
+#define JOG_Z_UP_BIT            6
+#define JOG_Z_DOWN_BIT 			7
+#define JOG_Z_MASK 				(1<<JOG_Z_UP_BIT) | (1<<JOG_Z_DOWN_BIT)
+
 
 #define SENSE_PORT              GPIO_PORTE_BASE
 #define DOOR_BIT                1
@@ -115,12 +126,14 @@
 #define STEP_DIR_PORT         	GPIO_PORTB_BASE
 #define STEP_X_DIR           	3
 #define STEP_Y_DIR           	4
-//#define STEP_Z_DIR           	5
+
+#ifndef MOTOR_Z
+#define STEP_Z_DIR           	5
+#define STEP_DIR_MASK			((1 << STEP_X_DIR) | (1 << STEP_Y_DIR) | (1 << STEP_Z_DIR))
+#define STEP_DIR_INVERT			((CONFIG_INVERT_X_AXIS<<STEP_X_DIR)|(CONFIG_INVERT_Y_AXIS<<STEP_Y_DIR)|(CONFIG_INVERT_Z_AXIS<<STEP_Z_DIR))
+#else
 #define STEP_DIR_MASK			((1 << STEP_X_DIR) | (1 << STEP_Y_DIR) /*| (1 << STEP_Z_DIR)*/)
 #define STEP_DIR_INVERT			((CONFIG_INVERT_X_AXIS<<STEP_X_DIR)|(CONFIG_INVERT_Y_AXIS<<STEP_Y_DIR)/*|(CONFIG_INVERT_Z_AXIS<<STEP_Z_DIR)*/)
-
-#define MOTOR_Z
-#ifdef MOTOR_Z
 #define	STEP_Z_MASK				((1 << 5) | (1 << 7))
 #define	STEP_Z_UP				(1 << 7)
 #define	STEP_Z_DOWN				(1 << 5)

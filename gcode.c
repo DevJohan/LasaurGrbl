@@ -834,12 +834,13 @@ void gcode_request_position_update() {
 
 // Move by the supplied offset(s).
 // Used by the joystick to move the head manually.
-void gcode_manual_move(double x, double y, double rate) {
+void gcode_manual_move(double x, double y, double z, double rate) {
 	double target[3];
 
 	memcpy(target, gc.position, sizeof(target));
 	target[X_AXIS] += x;
 	target[Y_AXIS] += y;
+	target[Z_AXIS] += z;
 
 	planner_line(target[X_AXIS] + gc.offsets[3 * gc.offselect + X_AXIS],
 				 target[Y_AXIS] + gc.offsets[3 * gc.offselect + Y_AXIS],

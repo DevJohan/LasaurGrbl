@@ -251,7 +251,7 @@ void stepper_set_position(double x, double y, double z) {
   stepper_synchronize();  // wait until processing is done
   stepper_position[X_AXIS] = floor(x*CONFIG_X_STEPS_PER_MM + 0.5);
   stepper_position[Y_AXIS] = floor(y*CONFIG_Y_STEPS_PER_MM + 0.5);
-  stepper_position[Z_AXIS] = floor(z*CONFIG_Z_STEPS_PER_MM + 0.5);  
+  stepper_position[Z_AXIS] = floor(z*CONFIG_Z_STEPS_PER_MM + 0.5);
 }
 
 
@@ -617,9 +617,9 @@ static void homing_cycle(bool x_axis, bool y_axis, bool z_axis, bool reverse_dir
   
   for(;;) {
 
-	limit_bits = (SENSE_X_LIMIT)?0x01:0;
-	limit_bits |= (SENSE_Y_LIMIT)?0x02:0;
-	limit_bits |= (SENSE_Z_LIMIT)?0x04:0;
+	limit_bits =  (SENSE_X_LIMIT) ? 0x01:0;
+	limit_bits |= (SENSE_Y_LIMIT) ? 0x02:0;
+	limit_bits |= (SENSE_Z_LIMIT) ? 0x04:0;
 
     if (reverse_direction) {         
       // Invert limit_bits if this is a reverse homing_cycle

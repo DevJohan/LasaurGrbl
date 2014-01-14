@@ -17,6 +17,7 @@
 
 #include <math.h>
 #include <stdint.h>
+#include <string.h>
 #include <inc/hw_ints.h>
 #include <inc/hw_types.h>
 #include <inc/hw_memmap.h>
@@ -32,6 +33,7 @@
 
 #include "joystick.h"
 #include "tasks.h"
+#include "lcd.h"
 
 // The joystick has no effect when the position is central +/- threshold.
 #define ZERO_THRESHOLD	0x50
@@ -51,6 +53,7 @@ static unsigned long joystick_y[1] = {0};
 static unsigned long joystick_center[2] = {0};
 static unsigned long status = STATUS_CH0_IDLE | STATUS_CH1_IDLE;
 static uint8_t enabled = 0;
+uint8_t current_jog_z = 0;
 
 static struct task_manual_move_data task_data = {0.0};
 
@@ -106,9 +109,18 @@ static void button_handler(void) {
 	}
 }
 
+static void jog_z_handler(void) {
+	GPIOPinIntClear(JOG_Z_PORT, JOG_Z_MASK);
+
+	current_jog_z = ((JOG_Z_MASK) & GPIOPinRead(JOG_Z_PORT, JOG_Z_MASK));
+}
+
 static void joystick_isr(void) {
 
 	TimerIntClear(JOY_TIMER, TIMER_TIMA_TIMEOUT);
+
+	memset(&task_data,0,sizeof(struct task_manual_move_data));
+
 
 	// Only allow the joystick when AUX1 (Crosshair) is enabled
 	if (enabled) {
@@ -152,9 +164,25 @@ static void joystick_isr(void) {
 #else
 		task_data.y_offset = x_off;
 #endif
+
+
+	}
+
+	if( current_jog_z ){
+		switch(current_jog_z){
+		case (1<<JOG_Z_UP_BIT):
+				task_data.z_offset =  0.0003; break;
+		case (1<<JOG_Z_DOWN_BIT):
+				task_data.z_offset = -0.0003; break;
+		default:
+			task_data.z_offset = 0;
+		}
+	}
+	if( enabled || current_jog_z ){
 		task_data.rate = 20000;
 		task_enable(TASK_MANUAL_MOVE, &task_data);
-
+	}
+	if( enabled ){
 		//
 	    // Trigger the next ADC conversion.
 	    //
@@ -162,7 +190,9 @@ static void joystick_isr(void) {
 			ADCProcessorTrigger(ADC0_BASE, 0);
 		if (status & STATUS_CH1_IDLE)
 			ADCProcessorTrigger(ADC0_BASE, 1);
+
 	}
+
 }
 
 void joystick_init(void) {
@@ -211,6 +241,14 @@ void joystick_init(void) {
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER3);
 	TimerConfigure(JOY_TIMER, TIMER_CFG_PERIODIC);
 
+
+	//Register Jog Z buttons
+	GPIOPinTypeGPIOInput(JOG_Z_PORT, JOG_Z_MASK);
+	GPIOIntTypeSet(JOG_Z_PORT, JOG_Z_MASK, GPIO_BOTH_EDGES);
+	GPIOPortIntRegister(JOG_Z_PORT, jog_z_handler);
+	GPIOPinIntEnable(JOG_Z_PORT, JOG_Z_MASK);
+	GPIOPadConfigSet(JOG_Z_PORT,JOG_Z_MASK,GPIO_STRENGTH_2MA,GPIO_PIN_TYPE_STD_WPD);
+
 	// Create a 10ms timer callback
 	TimerLoadSet64(JOY_TIMER, SysCtlClockGet() / 500);
 	TimerIntRegister(JOY_TIMER, TIMER_A, joystick_isr);
@@ -223,10 +261,12 @@ void joystick_enable(void){
 	GPIOPinIntEnable(JOY_PORT, JOY_MASK);
     ADCIntEnable(ADC0_BASE, 0);
     ADCIntEnable(ADC0_BASE, 1);
+	GPIOPinIntEnable(JOG_Z_PORT, JOG_Z_MASK);
 }
 
 void joystick_disable(void){
 	GPIOPinIntDisable(JOY_PORT, JOY_MASK);
     ADCIntDisable(ADC0_BASE, 0);
     ADCIntDisable(ADC0_BASE, 1);
+	GPIOPinIntDisable(JOG_Z_PORT, JOG_Z_MASK);
 }

@@ -41,6 +41,7 @@ static void *task_data[TASK_END];
 
 static uint64_t timer_load;
 uint32_t system_time_ms = 0;
+extern uint8_t current_jog_z;
 
 void gp_timer_isr(void) {
 	TimerLoadSet64(GP_TIMER, timer_load);
@@ -120,7 +121,7 @@ void tasks_loop(void) {
     	if (task_running(TASK_MANUAL_MOVE)) {
     		struct task_manual_move_data *move = task_data[TASK_MANUAL_MOVE];
     		if (planner_blocks_available() >= PLANNER_FIFO_READY_THRESHOLD) {
-    			gcode_manual_move(move->x_offset, move->y_offset, move->rate);
+    			gcode_manual_move(move->x_offset, move->y_offset, move->z_offset, move->rate);
     			task_disable(TASK_MANUAL_MOVE);
     		}
     	}
@@ -164,7 +165,10 @@ void tasks_loop(void) {
 
     				lcd_clear();
         			lcd_setCursor(0, 0);
-        	    	lcd_drawstring("  LaserGRBL   ");
+        	    	lcd_drawstring("LaserGRBL");
+        	    	lcd_drawstring( current_jog_z & (1<<JOG_Z_UP_BIT) ? "1":"0");
+        	    	lcd_drawstring( current_jog_z & (1<<JOG_Z_DOWN_BIT) ? "1":"0");
+        	    	lcd_drawstring("\n");
         	    	lcd_drawstring("Power: ");
         	    	lcd_drawint(power);
         	    	lcd_drawstring("%\n");

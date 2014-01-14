@@ -30,8 +30,9 @@ void sense_init();
 #define SENSE_DOOR_OPEN (GPIOPinRead(SENSE_PORT, (1 << DOOR_BIT)) != 0)
 #define SENSE_CHILLER_OFF (temperature_read(0) > (20 * 16))
 // invert door, remove power, add z_limits
-//#define SENSE_LIMITS (SENSE_X_LIMIT || SENSE_Y_LIMIT || SENSE_Z_LIMIT || SENSE_E_LIMIT)
-#define SENSE_LIMITS (SENSE_X_LIMIT || SENSE_Y_LIMIT)
+#define SENSE_LIMITS (SENSE_X_LIMIT || SENSE_Y_LIMIT || SENSE_Z_LIMIT || SENSE_E_LIMIT || SENSE_DOOR_OPEN)
+//#define SENSE_LIMITS (SENSE_X_LIMIT || SENSE_Y_LIMIT || SENSE_Z_LIMIT || SENSE_DOOR_OPEN)
+//#define SENSE_LIMITS (SENSE_X_LIMIT || SENSE_Y_LIMIT)
 #define SENSE_SAFETY (/*SENSE_CHILLER_OFF ||*/ SENSE_DOOR_OPEN)
 
 void control_init();

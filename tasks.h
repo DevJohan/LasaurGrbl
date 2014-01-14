@@ -42,6 +42,7 @@ typedef uint16_t	task_t;
 struct task_manual_move_data {
 	double x_offset;
 	double y_offset;
+	double z_offset;
 	double rate;
 };
 

@@ -83,6 +83,21 @@ int main(void)
 #ifdef ENABLE_LCD
     lcd_init();
 #endif
+    lcd_clear();
+    lcd_setCursor(0,0);
+    lcd_drawstring("Hej");
+    lcd_setCursor(0,8);
+    lcd_drawstring("Lek inte med");
+    lcd_setCursor(0,16);
+    lcd_drawstring("lasern nar du");
+    lcd_setCursor(0,24);
+    lcd_drawstring("inte vet vad");
+    lcd_setCursor(0,32);
+    lcd_drawstring("du gor!");
+    lcd_setCursor(0,40);
+    lcd_drawstring("");
+    lcd_display();
+
     serial_init();
     gcode_init();
     sense_init();

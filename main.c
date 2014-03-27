@@ -25,6 +25,7 @@
 #include <driverlib/gpio.h>
 #include "driverlib/rom.h"
 #include <driverlib/sysctl.h>
+#include <driverlib/i2c.h>
 
 #include "config.h"
 
@@ -33,7 +34,7 @@
 #include "planner.h"
 #include "stepper.h"
 #include "sense_control.h"
-#include "temperature.h"
+#include "laser_safety.h"
 #include "gcode.h"
 #include "serial.h"
 #include "joystick.h"
@@ -79,7 +80,14 @@ int main(void)
     joystick_init();
 
     // This needs to be done before the USB interrupts start firing
-    temperature_init();
+    flow_temperature_init();
+
+    I2CMasterSlaveAddrSet( I2C1_MASTER_BASE, 2, false);   // false = write, true = read
+    // Set register address of AK8963
+    I2CMasterDataPut( I2C1_MASTER_BASE, '1');
+    // Start sending data
+    I2CMasterControl( I2C1_MASTER_BASE, I2C_MASTER_CMD_SINGLE_SEND);
+
 #ifdef ENABLE_LCD
     lcd_init();
 #endif

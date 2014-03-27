@@ -51,9 +51,9 @@
 #define CONFIG_Y_ORIGIN_OFFSET 0.0  // mm, y-offset of table origin from physical home
 #define CONFIG_Z_ORIGIN_OFFSET 0.0   // mm, z-offset of table origin from physical home
 #define CONFIG_X_MIN 0.0
-#define CONFIG_X_MAX 325.0
+#define CONFIG_X_MAX 340.0
 #define CONFIG_Y_MIN 0.0
-#define CONFIG_Y_MAX 215.0
+#define CONFIG_Y_MAX 225.0
 #define CONFIG_Z_MIN 0.0
 #define CONFIG_Z_MAX 50.0
 
@@ -76,6 +76,7 @@
 #define	CONFIG_USB_PRIORITY			(2 << 5)
 #define	CONFIG_SENSE_PRIORITY		(3 << 5)
 #define	CONFIG_JOY_PRIORITY			(4 << 5)
+#define CONFIG_I2C_PRIORITY			(5 << 5)
 #define	CONFIG_GPTIMER_PRIORITY		(7 << 5)
 
 #define JOY_PORT              	GPIO_PORTF_BASE
@@ -86,10 +87,10 @@
 #define JOY_INVERT_Y
 //#define JOY_INVERT_X
 
-#define JOG_Z_PORT              GPIO_PORTA_BASE
-#define JOG_Z_UP_BIT            6
-#define JOG_Z_DOWN_BIT 			7
-#define JOG_Z_MASK 				(1<<JOG_Z_UP_BIT) | (1<<JOG_Z_DOWN_BIT)
+//#define JOG_Z_PORT              GPIO_PORTA_BASE
+//#define JOG_Z_UP_BIT            6
+//#define JOG_Z_DOWN_BIT 			7
+//#define JOG_Z_MASK 				(1<<JOG_Z_UP_BIT) | (1<<JOG_Z_DOWN_BIT)
 
 
 #define SENSE_PORT              GPIO_PORTE_BASE
@@ -100,8 +101,11 @@
 
 #define GP_TIMER				TIMER4_BASE
 
-#define OW_PORT					GPIO_PORTE_BASE
-#define OW_BIT             		5
+#define LASER_SAFETY_PORT		GPIO_PORTA_BASE
+#define LASER_SAFETY_I2C		1
+#define LASER_SAFETY_SCL  		6
+#define LASER_SAFETY_SDA  		7
+#define LASER_SAFETY_MASK  		( 1<<LASER_SAFETY_SCL ) | ( 1<<LASER_SAFETY_SDA )
 
 #define ASSIST_PORT           	GPIO_PORTD_BASE
 #define AIR_ASSIST_BIT        	2

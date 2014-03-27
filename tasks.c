@@ -34,6 +34,7 @@
 #include "sense_control.h"
 #include "lcd.h"
 #include "joystick.h"
+#include "laser_safety.h"
 
 
 static volatile task_t task_status = 0;
@@ -87,6 +88,9 @@ void tasks_loop(void) {
 	double last_x = 0;
 	double last_y = 0;
 	double last_z = 0;
+	uint16_t last_temperature = 0;
+	uint16_t last_flow = 0;
+
 
 	// Main task loop, does not return
 	// None of the tasks should block, other than
@@ -149,14 +153,18 @@ void tasks_loop(void) {
     			double x = stepper_get_position_x();
     			double y = stepper_get_position_y();
     			double z = stepper_get_position_z();
+    			uint16_t temperature = temperature_read(0);
+    			uint16_t flow = temperature_read(1);
 
-    			if (x != last_x || y != last_y || z != last_z) {
+    			if (x != last_x || y != last_y || z != last_z || temperature != last_temperature ) {
     				uint32_t power = control_get_intensity();
     				block_t *block = planner_get_current_block();
     				uint32_t ppi = 0;
     				last_x = x;
     				last_y = y;
     				last_z = z;
+    				last_temperature = temperature;
+    				last_flow = flow;
 
     				if (block) {
     					power = block->laser_pwm * 100 / 255;
@@ -166,8 +174,8 @@ void tasks_loop(void) {
     				lcd_clear();
         			lcd_setCursor(0, 0);
         	    	lcd_drawstring("LaserGRBL");
-        	    	lcd_drawstring( current_jog_z & (1<<JOG_Z_UP_BIT) ? "1":"0");
-        	    	lcd_drawstring( current_jog_z & (1<<JOG_Z_DOWN_BIT) ? "1":"0");
+//        	    	lcd_drawstring( current_jog_z & (1<<JOG_Z_UP_BIT) ? "1":"0");
+//        	    	lcd_drawstring( current_jog_z & (1<<JOG_Z_DOWN_BIT) ? "1":"0");
         	    	lcd_drawstring("\n");
         	    	lcd_drawstring("Power: ");
         	    	lcd_drawint(power);
@@ -181,8 +189,12 @@ void tasks_loop(void) {
         	    	lcd_drawstring("Y: ");
         	    	lcd_drawfloat(y);
         	    	lcd_drawstring("\n");
-        	    	lcd_drawstring("Z: ");
-        	    	lcd_drawfloat(z);
+//        	    	lcd_drawstring("Z: ");
+//        	    	lcd_drawfloat(z);
+        	    	lcd_drawstring("T:");
+        	    	lcd_drawint(temperature);
+        	    	lcd_drawstring(" F:");
+        	    	lcd_drawint(flow);
         	    	lcd_drawstring("\n");
         	    	lcd_display();
     			}

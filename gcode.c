@@ -41,7 +41,7 @@
 #include "motion_control.h"
 #include "planner.h"
 #include "stepper.h"
-#include "temperature.h"
+#include "laser_safety.h"
 #include "tasks.h"
 
 enum {
@@ -340,8 +340,11 @@ void gcode_process_line(char *buffer, int length) {
 	if (SENSE_DOOR_OPEN) {
 		printString("D");  // Warning: Door is open
 	}
-	if (SENSE_CHILLER_OFF) {
-		printString("C");  // Warning: Chiller is off
+	if (SENSE_TEMP_WARNING) {
+		printString("C");  // Warning: Chiller water temperature is too high
+	}
+	if (SENSE_FLOW_WARNING) {
+		printString("F");  // Warning: Chiller water flow is too low
 	}
 	// limit
 	if (SENSE_LIMITS) {

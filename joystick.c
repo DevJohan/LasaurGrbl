@@ -109,11 +109,11 @@ static void button_handler(void) {
 	}
 }
 
-static void jog_z_handler(void) {
-	GPIOPinIntClear(JOG_Z_PORT, JOG_Z_MASK);
-
-	current_jog_z = ((JOG_Z_MASK) & GPIOPinRead(JOG_Z_PORT, JOG_Z_MASK));
-}
+//static void jog_z_handler(void) {
+//	GPIOPinIntClear(JOG_Z_PORT, JOG_Z_MASK);
+//
+//	current_jog_z = ((JOG_Z_MASK) & GPIOPinRead(JOG_Z_PORT, JOG_Z_MASK));
+//}
 
 static void joystick_isr(void) {
 
@@ -168,20 +168,20 @@ static void joystick_isr(void) {
 
 	}
 
-	if( current_jog_z ){
-		switch(current_jog_z){
-		case (1<<JOG_Z_UP_BIT):
-				task_data.z_offset =  0.0003; break;
-		case (1<<JOG_Z_DOWN_BIT):
-				task_data.z_offset = -0.0003; break;
-		default:
-			task_data.z_offset = 0;
-		}
-	}
-	if( enabled || current_jog_z ){
-		task_data.rate = 20000;
-		task_enable(TASK_MANUAL_MOVE, &task_data);
-	}
+//	if( current_jog_z ){
+//		switch(current_jog_z){
+//		case (1<<JOG_Z_UP_BIT):
+//				task_data.z_offset =  0.0003; break;
+//		case (1<<JOG_Z_DOWN_BIT):
+//				task_data.z_offset = -0.0003; break;
+//		default:
+//			task_data.z_offset = 0;
+//		}
+//	}
+//	if( enabled || current_jog_z ){
+//		task_data.rate = 20000;
+//		task_enable(TASK_MANUAL_MOVE, &task_data);
+//	}
 	if( enabled ){
 		//
 	    // Trigger the next ADC conversion.
@@ -242,12 +242,12 @@ void joystick_init(void) {
 	TimerConfigure(JOY_TIMER, TIMER_CFG_PERIODIC);
 
 
-	//Register Jog Z buttons
-	GPIOPinTypeGPIOInput(JOG_Z_PORT, JOG_Z_MASK);
-	GPIOIntTypeSet(JOG_Z_PORT, JOG_Z_MASK, GPIO_BOTH_EDGES);
-	GPIOPortIntRegister(JOG_Z_PORT, jog_z_handler);
-	GPIOPinIntEnable(JOG_Z_PORT, JOG_Z_MASK);
-	GPIOPadConfigSet(JOG_Z_PORT,JOG_Z_MASK,GPIO_STRENGTH_2MA,GPIO_PIN_TYPE_STD_WPD);
+//	//Register Jog Z buttons
+//	GPIOPinTypeGPIOInput(JOG_Z_PORT, JOG_Z_MASK);
+//	GPIOIntTypeSet(JOG_Z_PORT, JOG_Z_MASK, GPIO_BOTH_EDGES);
+//	GPIOPortIntRegister(JOG_Z_PORT, jog_z_handler);
+//	GPIOPinIntEnable(JOG_Z_PORT, JOG_Z_MASK);
+//	GPIOPadConfigSet(JOG_Z_PORT,JOG_Z_MASK,GPIO_STRENGTH_2MA,GPIO_PIN_TYPE_STD_WPD);
 
 	// Create a 10ms timer callback
 	TimerLoadSet64(JOY_TIMER, SysCtlClockGet() / 500);
@@ -261,12 +261,12 @@ void joystick_enable(void){
 	GPIOPinIntEnable(JOY_PORT, JOY_MASK);
     ADCIntEnable(ADC0_BASE, 0);
     ADCIntEnable(ADC0_BASE, 1);
-	GPIOPinIntEnable(JOG_Z_PORT, JOG_Z_MASK);
+//	GPIOPinIntEnable(JOG_Z_PORT, JOG_Z_MASK);
 }
 
 void joystick_disable(void){
 	GPIOPinIntDisable(JOY_PORT, JOY_MASK);
     ADCIntDisable(ADC0_BASE, 0);
     ADCIntDisable(ADC0_BASE, 1);
-	GPIOPinIntDisable(JOG_Z_PORT, JOG_Z_MASK);
+//	GPIOPinIntDisable(JOG_Z_PORT, JOG_Z_MASK);
 }

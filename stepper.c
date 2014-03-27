@@ -63,7 +63,7 @@
 #include "gcode.h"
 #include "planner.h"
 #include "sense_control.h"
-#include "temperature.h"
+#include "laser_safety.h"
 #include "tasks.h"
 #include "joystick.h"
 

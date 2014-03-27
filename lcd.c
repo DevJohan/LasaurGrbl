@@ -275,7 +275,7 @@ static void setContrast(char val) {
 
 // reduces how much is refreshed, which speeds it up!
 // originally derived from Steve Evans/JCW's mod but cleaned up and optimized
-#define LCD_ENABLE_PARTIAL_UPDATE
+//#define LCD_ENABLE_PARTIAL_UPDATE
 
 #ifdef LCD_ENABLE_PARTIAL_UPDATE
 static uint8_t xUpdateMin, xUpdateMax, yUpdateMin, yUpdateMax;

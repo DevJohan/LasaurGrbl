@@ -99,13 +99,17 @@ static void button_handler(void) {
 	if (GPIOPinRead(JOY_PORT, JOY_MASK) > 0)
 	{
 		enabled = 0;
-		GPIOPinWrite(ASSIST_PORT,  (1<< AUX1_ASSIST_BIT), 0);
+#if  defined(CROSSHAIR_ENABLE_BIT) && CROSSHAIR_ENABLE_BIT >= 0
+		GPIOPinWrite(CROSSHAIR_PORT,  (1<< CROSSHAIR_ENABLE_BIT), 0);
+#endif
 		task_enable(TASK_SET_OFFSET, 0);
 	}
 	else
 	{
 		enabled = 1;
-		GPIOPinWrite(ASSIST_PORT,  (1<< AUX1_ASSIST_BIT), (1<< AUX1_ASSIST_BIT));
+#if defined(CROSSHAIR_ENABLE_BIT) && CROSSHAIR_ENABLE_BIT >= 0
+		GPIOPinWrite(CROSSHAIR_PORT,  (1<< CROSSHAIR_ENABLE_BIT), (1<< CROSSHAIR_ENABLE_BIT));
+#endif
 	}
 }
 

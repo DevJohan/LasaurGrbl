@@ -44,6 +44,12 @@ static uint64_t timer_load;
 uint32_t system_time_ms = 0;
 extern uint8_t current_jog_z;
 
+
+uint32_t get_system_time_ms(){
+	return system_time_ms;
+}
+
+
 void gp_timer_isr(void) {
 	TimerLoadSet64(GP_TIMER, timer_load);
 	TimerIntClear(GP_TIMER, TIMER_TIMA_TIMEOUT);
@@ -78,9 +84,7 @@ void task_disable(TASK task) {
 }
 
 uint8_t task_running(TASK task) {
-	if (task_status & (1 << task))
-		return 1;
-	return 0;
+	return  (task_status & (1 << task)) ? 1 : 0;
 }
 
 void tasks_loop(void) {
@@ -138,7 +142,7 @@ void tasks_loop(void) {
 
 		// Z Motor Run
     	if (task_running(TASK_MOTOR_DELAY)) {
-    		if (system_time_ms > (uint32_t)task_data[TASK_MOTOR_DELAY])
+    		if ( system_time_ms > (uint32_t)task_data[TASK_MOTOR_DELAY] )
     		{
     			GPIOPinWrite(STEP_DIR_PORT, GPIO_PIN_5 | GPIO_PIN_7, 0);
     			task_disable(TASK_MOTOR_DELAY);
@@ -154,9 +158,15 @@ void tasks_loop(void) {
     			double y = stepper_get_position_y();
     			double z = stepper_get_position_z();
     			uint16_t temperature = temperature_read(0);
-    			uint16_t flow = temperature_read(1);
+    			uint16_t flow = flow_read();
 
-    			if (x != last_x || y != last_y || z != last_z || temperature != last_temperature ) {
+    			if (
+    					x != last_x ||
+    					y != last_y ||
+    					z != last_z ||
+    					temperature != last_temperature ||
+    					flow != last_flow
+    			) {
     				uint32_t power = control_get_intensity();
     				block_t *block = planner_get_current_block();
     				uint32_t ppi = 0;
@@ -173,9 +183,7 @@ void tasks_loop(void) {
 
     				lcd_clear();
         			lcd_setCursor(0, 0);
-        	    	lcd_drawstring("LaserGRBL");
-//        	    	lcd_drawstring( current_jog_z & (1<<JOG_Z_UP_BIT) ? "1":"0");
-//        	    	lcd_drawstring( current_jog_z & (1<<JOG_Z_DOWN_BIT) ? "1":"0");
+        	    	lcd_drawstring("MakerspaceLaserGRBL");
         	    	lcd_drawstring("\n");
         	    	lcd_drawstring("Power: ");
         	    	lcd_drawint(power);
@@ -202,7 +210,7 @@ void tasks_loop(void) {
     	}
 #endif // ENABLE_LCD
 
-    	if (serial_active == 0 && !stepper_active()) {
+    	if ( serial_active == 0 && !stepper_active() ) {
 			// Allow Joystick control
 			joystick_enable();
     	}

@@ -31,6 +31,11 @@
 // Whether or not to drive an LCD.
 #define ENABLE_LCD
 
+#define CHILLER_HIGH_TEMP (45)
+#define CHILLER_LOW_TEMP (5)
+
+#define CHILLER_HIGH_FLOW (50)
+#define CHILLER_LOW_FLOW (10)
 
 //??Whether or not to use a DC-motor for Z-axis??
 //#define MOTOR_Z
@@ -103,14 +108,17 @@
 
 #define LASER_SAFETY_PORT		GPIO_PORTA_BASE
 #define LASER_SAFETY_I2C		1
-#define LASER_SAFETY_SCL  		6
-#define LASER_SAFETY_SDA  		7
-#define LASER_SAFETY_MASK  		( 1<<LASER_SAFETY_SCL ) | ( 1<<LASER_SAFETY_SDA )
+#define LASER_SAFETY_SCL  		GPIO_PIN_6
+#define LASER_SAFETY_SDA  		GPIO_PIN_7
+#define LASER_SAFETY_MASK  		(( LASER_SAFETY_SCL ) | ( LASER_SAFETY_SDA ))
+
+#define CROSSHAIR_PORT       	GPIO_PORTD_BASE
+#define CROSSHAIR_ENABLE_BIT    (-1)
+#define CROSSHAIR_MASK    		(1<<CROSSHAIR_ENABLE_BIT)
 
 #define ASSIST_PORT           	GPIO_PORTD_BASE
 #define AIR_ASSIST_BIT        	2
-#define AUX1_ASSIST_BIT       	6
-#define ASSIST_MASK				(1 << AIR_ASSIST_BIT) | (1<< AUX1_ASSIST_BIT)
+#define ASSIST_MASK				(1 << AIR_ASSIST_BIT)
   
 #define LIMIT_PORT              GPIO_PORTC_BASE
 #define X_LIMIT_BIT             4

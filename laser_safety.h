@@ -20,8 +20,20 @@
 #define _laser_safety_flow_temperature_h
 
 void flow_temperature_init(void);
+uint32_t time_since_read_ms();
 uint8_t temperature_num_sensors(void);
 uint16_t temperature_read(uint8_t sensor);
 uint16_t flow_read();
+
+void I2CIssueWrite(
+		unsigned char slave_adress,
+		unsigned char *pucData,
+		unsigned long ulCount,
+		void(*callback)(void) );
+void I2CIssueRead(
+		unsigned char slave_adress,
+		unsigned char *pucData,
+		unsigned long ulCount,
+		void(*callback)(void));
 
 #endif /* laser_safety_flow_temperature_h */

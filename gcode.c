@@ -340,6 +340,9 @@ void gcode_process_line(char *buffer, int length) {
 	if (SENSE_DOOR_OPEN) {
 		printString("D");  // Warning: Door is open
 	}
+	if (SENSE_E_LIMIT) {
+		printString("G");  // Emergency stop
+	}
 	if (SENSE_TEMP_WARNING) {
 		printString("C");  // Warning: Chiller water temperature is too high
 	}

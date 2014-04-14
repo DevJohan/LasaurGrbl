@@ -82,12 +82,6 @@ int main(void)
     // This needs to be done before the USB interrupts start firing
     flow_temperature_init();
 
-    I2CMasterSlaveAddrSet( I2C1_MASTER_BASE, 2, false);   // false = write, true = read
-    // Set register address of AK8963
-    I2CMasterDataPut( I2C1_MASTER_BASE, '1');
-    // Start sending data
-    I2CMasterControl( I2C1_MASTER_BASE, I2C_MASTER_CMD_SINGLE_SEND);
-
 #ifdef ENABLE_LCD
     lcd_init();
 #endif

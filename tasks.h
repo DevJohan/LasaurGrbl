@@ -52,5 +52,6 @@ void tasks_loop(void);
 void task_enable(TASK task, void* data);
 void task_disable(TASK task);
 uint8_t task_running(TASK task);
+uint32_t get_system_time_ms();
 
 #endif

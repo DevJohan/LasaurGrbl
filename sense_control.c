@@ -163,8 +163,12 @@ void control_air_assist(bool enable) {
 
 void control_aux1_assist(bool enable) {
   if (enable) {
-    GPIOPinWrite(ASSIST_PORT, (1 << AUX1_ASSIST_BIT), (1 << AUX1_ASSIST_BIT));
+#if defined(CROSSHAIR_ENABLE_BIT) && CROSSHAIR_ENABLE_BIT >= 0
+    GPIOPinWrite(CROSSHAIR_PORT, (1 << CROSSHAIR_ENABLE_BIT), (1 << CROSSHAIR_ENABLE_BIT));
+#endif
   } else {
-    GPIOPinWrite(ASSIST_PORT, (1 << AUX1_ASSIST_BIT), 0);
+#if defined(CROSSHAIR_ENABLE_BIT) && CROSSHAIR_ENABLE_BIT >= 0
+    GPIOPinWrite(CROSSHAIR_PORT, (1 << CROSSHAIR_ENABLE_BIT), 0);
+#endif
   }  
 }

@@ -137,7 +137,7 @@ void stepper_init() {
 
 #ifdef MOTOR_Z
 	// Use alternative to Stepper (H-Bridge Motor drive)
-	GPIOPadConfigSet(SENSE_PORT, STEP_Z_MASK, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD);
+	GPIOPadConfigSet(STEP_PORT, STEP_Z_MASK, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD);
 	GPIOPinTypeGPIOOutput(STEP_DIR_PORT, STEP_Z_MASK);
 	GPIOPinWrite(STEP_DIR_PORT, STEP_Z_MASK, 0);
 #endif

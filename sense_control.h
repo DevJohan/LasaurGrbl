@@ -20,21 +20,25 @@
 
 #include <stdbool.h>
 #include "config.h"
+#include "laser_safety.h"
 
 
 void sense_init();
 #define SENSE_X_LIMIT (GPIOPinRead(LIMIT_PORT, (1 << X_LIMIT_BIT)) != 0)
 #define SENSE_Y_LIMIT (GPIOPinRead(LIMIT_PORT, (1 << Y_LIMIT_BIT)) != 0)
 #define SENSE_Z_LIMIT (GPIOPinRead(LIMIT_PORT, (1 << Z_LIMIT_BIT)) == 0)
-#define SENSE_E_LIMIT (GPIOPinRead(LIMIT_PORT, (1 << E_LIMIT_BIT)) == 0)
+#define SENSE_E_LIMIT (GPIOPinRead(LIMIT_PORT, (1 << E_LIMIT_BIT)) != 0)
 #define SENSE_DOOR_OPEN (GPIOPinRead(SENSE_PORT, (1 << DOOR_BIT)) != 0)
-#define SENSE_TEMP_WARNING ( temperature_read(0) > (25) )
-#define SENSE_FLOW_WARNING ( flow_read() < (10) )
+#define SENSE_TEMP_WARNING ( ( temperature_read(0) > CHILLER_HIGH_TEMP) || ( temperature_read(0) < CHILLER_LOW_TEMP ) )
+#define SENSE_FLOW_WARNING ( ( flow_read() < CHILLER_LOW_FLOW ) || ( flow_read() > CHILLER_HIGH_FLOW ) )
+#define SENSE_SAFETY_TIMEOUT ( time_since_read_ms() > 3000 )
 // invert door, remove power, add z_limits
+
+
 #define SENSE_LIMITS (SENSE_X_LIMIT || SENSE_Y_LIMIT || SENSE_Z_LIMIT || SENSE_E_LIMIT || SENSE_DOOR_OPEN)
 //#define SENSE_LIMITS (SENSE_X_LIMIT || SENSE_Y_LIMIT || SENSE_Z_LIMIT || SENSE_DOOR_OPEN)
 //#define SENSE_LIMITS (SENSE_X_LIMIT || SENSE_Y_LIMIT)
-#define SENSE_SAFETY ( SENSE_TEMP_WARNING || SENSE_FLOW_WARNING || SENSE_DOOR_OPEN )
+#define SENSE_SAFETY ( SENSE_TEMP_WARNING || SENSE_SAFETY_TIMEOUT || SENSE_FLOW_WARNING || SENSE_DOOR_OPEN )
 
 void control_init();
 
